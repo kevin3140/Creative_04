@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Job Finder_Creative_group_02</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesheets/job.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+$( "#stateField" ).keyup(function() {
+var url = "StatesLists.txt";
+$.getJSON(url,function(data) {
+  console.log(data);
+  console.log(data[0]);
+  console.log("Got "+data[0].States);
+  var everything;
+  everything = "<ul>";
+  $.each(data, function(i,item) {
+    if (data[i].States.toLocaleLowerCase().indexOf($("#stateField").val().toLocaleLowerCase()) != -1){
+    everything += "<li> "+data[i].States + "</li>";
+      
+    }
+    
+  });
+  everything += "</ul>";
+  $("#txtHint").html(everything);
+  
+});
+});
+
+$("#jobsButton").click(function(e){
+var value = $("#stateField").val().toLocaleLowerCase();
+var jobPosition = $("#dropbox").val();
+
+$("#displayState").text(value);
+var myurl = "https://jobs.search.gov/jobs/search.json?query?" + jobPosition + "+jobs+in+" + value;
+console.log(myurl);
+$.ajax({
+  url : myurl,
+  dataType: 'jsonp',
+  success : function(parsed_json) {
+    everything = "";
+    $.each(parsed_json, function(i,item) {
+      var position_title = parsed_json[i]['position_title'];
+      var organization_name = parsed_json[i]['organization_name'];
+      var start_date = parsed_json[i]['start_date'];
+      var end_date = parsed_json[i]['end_date'];
+      var locations = parsed_json[i]['locations'];
+      var url = parsed_json[i]['url'];
+      everything += "<ul>";
+      everything += "<li>Position Title: " + position_title;
+      everything += "<li>Organization Name: " + organization_name;
+      everything += "<li>Start Date: " + start_date;
+      everything += "<li>End Date: " + end_date;
+      everything += "<li>Location: " + locations;
+      everything += "<li>URL: " + url;
+      everything += "</ul> <br><br>";
+      
+    });
+    
+    $("#jobs").html(everything);
+    
+  }
+  
+});
+  
+}); 
+  
+});
+</script>
+
+
+  
+  
+  
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse">
+  
+</nav>
+
+<div class="jumbotron">
+  
+     <h1>Searching Job in United States</h1>
+</div>
+  
+<div class="jumbotron">
+  <div1>
+  <form>
+    <h3>Choose the job you are looking for:</h3>
+    <select id="dropbox">
+      <option value="engineer">Engineer</option>
+      <option value="it">IT</option>
+      <option value="nursing">Nursing</option>
+      <option value="teacher">teacher</option>
+      </select>
+      <br><br>
+      Enter an USA State: <input type="text" id="stateField" value=""><br><br>
+      Suggestion: <span id="txtHint">Empty</span>
+      <input id="jobsButton" type="button" value="submit">
+      </form><br>
+  </div1>
+</div>
+    
+      <div class = "jumbotron">
+        <div1>
+      <h3>State</h3>
+      <p><textarea id="displayState">No State</textarea></p><br><br>
+      </div1>
+      </div>
+      
+      <div class = "jumbotron">
+        <div1>
+      <h3>Current Available Jobs</h3>
+      <div id="jobs">No job</div>
+      </div1>
+</div>
+
+
+<footer class="container-fluid text-center">
+  <p>Created by Gyuhwi lee for Creative_04</p>
+</footer>
+
+</body>
+</html>
